@@ -1,0 +1,41 @@
+<ion-header color="uno">
+  <ion-navbar color="uno">
+    <ion-title>
+     ACTAS
+    </ion-title>
+    <ion-buttons start> 
+        <button ion-button style="background-color: rgb(112, 33, 33)">   <ion-icon name="warning"></ion-icon>  <a href="tel:066"></a></button>
+       </ion-buttons>
+
+
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding style="background: linear-gradient(to bottom, #242323 0%, rgba(22, 22, 22, 0.5) 75%, #161616 100%);">
+    <br><br> <br><br> <br><br> <br><br>
+ 
+    
+<div style="text-align: center" (click)="si()">
+  <ion-card text-wrap style="text-align: center">
+    <ion-item style="text-align: center">
+      <ion-icon md="md-checkmark" ios="ios-checkmark"></ion-icon>
+      <button style="background: white">
+          SE ENCUENTRA EL BÚSCADO
+      </button>
+        </ion-item>
+      </ion-card>
+    </div>
+
+<div  style="text-align: center" (click)="no()">
+  <ion-card text-wrap style="text-align: center">
+    <ion-item style="text-align: center">
+      <ion-icon  md="md-close" ios="ios-close"></ion-icon>
+      <button style="background: white">
+          NO SE ENCUENTRA EL BÚSCADO
+      </button>
+        </ion-item>
+      </ion-card>
+    </div>
+</ion-content>
+
+

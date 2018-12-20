@@ -1,0 +1,57 @@
+
+
+
+  <ion-content  >
+    <ion-grid>
+<br><br><br><br>
+
+<div style="text-align: center">
+  <ion-row class="logo-row">
+    <ion-col></ion-col>
+    <ion-col width-67>
+      <img src="assets/imgs/iuStar_logo.png"/>
+    </ion-col>
+    <ion-col></ion-col>
+  </ion-row>
+</div>
+            <br><br><br><br>
+      <form>
+        <ion-item  >
+
+            <ion-label><ion-icon name="ios-person-outline" item-left></ion-icon></ion-label>
+          <ion-input
+          placeholder="USUARIO"
+            name="email"
+            type="text"
+            [(ngModel)]="nombre"
+            autocapitalize="off"
+            required
+          >
+          </ion-input>
+        </ion-item>
+
+        <ion-item  >
+            <ion-label><ion-icon name="ios-lock-outline" item-left></ion-icon></ion-label>
+          <ion-input
+          placeholder="CONTRASEÑA"
+            name="password"
+            type="password"
+            [(ngModel)]="password"
+            required
+          >
+          </ion-input>
+        </ion-item>
+        <div padding>
+          <button
+              ion-button round outline
+              (click)="ingresar()"
+              type="submit"
+              color="dark"
+              block
+          >
+            INGRESAR
+          </button>
+        </div>
+      </form>
+    </ion-grid>
+  </ion-content>
