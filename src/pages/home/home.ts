@@ -72,6 +72,7 @@ export class HomePage {
   }
 
   displayNetworkUpdate(connectionState: string){
+    console.log("Displayin connection!!!");
     let networkType = this.network.type;
     this.toast.create({
       message: `Estás ${connectionState} por ${networkType} `,
@@ -80,6 +81,7 @@ export class HomePage {
   }
 
   ionViewDidEnter(){
+    console.log("Entra a checar la conección :v");
     this.network.onConnect().subscribe(data => {
      this.displayNetworkUpdate(data.type); 
     }, error => console.log(error));
