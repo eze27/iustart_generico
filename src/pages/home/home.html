@@ -23,6 +23,8 @@
 
 
 <ion-list >
+  <span *ngIf="carga" id="load"> Cargando diligencias por favor espere... </span>
+  <span *ngIf="error" id="error"> Error</span>
 <div *ngFor="let item of items" (click)="viewEntry({record:item})">
   <ion-card text-wrap>
     <ion-item >

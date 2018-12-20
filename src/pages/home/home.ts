@@ -4,10 +4,12 @@ import {
   ModalController,
   AlertController,
   ViewController,
-  App
+  App,
+  ToastController
 } from "ionic-angular";
 import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
+import "rxjs/add/operator/timeout";
 import { LogProvider } from "../../providers/log/log";
 import { LoginPage } from "../../pages/login/login";
 import {
@@ -21,6 +23,7 @@ import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/take';
 import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderForwardResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder';
+import { Network } from '@ionic-native/network';
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
@@ -42,6 +45,10 @@ export class HomePage {
   itemsCollection: AngularFirestoreCollection<any>; //Firestore collection
   items2: Observable<Items[]>;
   fecha: any;
+
+  public carga : boolean = true;
+  public error : boolean = false;
+
    constructor(
     public navCtrl: NavController,
     public http: Http,
@@ -55,15 +62,34 @@ export class HomePage {
     public backgroundGeolocation: BackgroundGeolocation,
     public zone: NgZone,
     public geolocation: Geolocation,
-    private nativeGeocoder: NativeGeocoder
+    private nativeGeocoder: NativeGeocoder,
+    private network: Network,
+    private toast: ToastController
   ) {}
   ionViewWillEnter() {
     this.load();
-  
     // this.user.start();
-   
-   
   }
+
+  displayNetworkUpdate(connectionState: string){
+    let networkType = this.network.type;
+    this.toast.create({
+      message: `Estás ${connectionState} por ${networkType} `,
+      duration: 3000
+    }).present();
+  }
+
+  ionViewDidEnter(){
+    this.network.onConnect().subscribe(data => {
+     this.displayNetworkUpdate(data.type); 
+    }, error => console.log(error));
+
+    this.network.onDisconnect().subscribe(data => {
+      this.displayNetworkUpdate(data.type); 
+     }, error => console.log(error));
+  }
+
+
   doRefresh(refresher) {
     console.log('Begin async operation', refresher);
     this.load();
@@ -72,6 +98,24 @@ export class HomePage {
       refresher.complete();
     }, 2000);
   }
+
+  showAlert(){
+    this.alertCtrl.create({
+      title: "Error",
+      subTitle: "Error inesperado, inténtelo más tarde.",
+      buttons: ["Aceptar"]
+    }).present();
+  }
+
+  TimeOut(){
+    this.alertCtrl.create({
+      title: "Error",
+      subTitle: "No se han podido cargar las diligencias, por favor vuelva a intentarlo recargando la pantalla.",
+      buttons: ["Aceptar"]
+    });
+  }
+
+
   load() {
     
     if (this.user.activo) {
@@ -81,7 +125,7 @@ export class HomePage {
       let url = `http://iustartech.com/iustargen/Api-Rest/index.php/expediente/obtener_expedientes/${toke_user}/${id_user}`;
 
       console.log("URL " + url);
-      this.http.get(url).map(res => res.json()).subscribe(data => {
+      this.http.get(url).timeout(10000).map(res => res.json()).subscribe(data => {
           this.items = data;
           console.log(this.user.nombre_actuario + " ");
           var data_array = [];
@@ -94,6 +138,8 @@ export class HomePage {
               status: data[i].status,
               tipo_juicio: data[i].tipo_juicio
             });
+            this.carga = false;
+            this.error = false;
           }
           
           this.actuario = this.db.doc(`/usuarios/${this.user.nombre_actuario}`);
@@ -103,6 +149,15 @@ export class HomePage {
         this.registra_firebase(this.user.nombre_actuario, data_array);
         //  this.verifica_en_firebase(this.user.nombre_actuario,data_array);
          
+        }, err => {
+          if(err.name === "TimeoutError" ){
+            this.TimeOut();
+          }
+          else{
+            this.showAlert();
+            this.error = true;
+            this.carga = false;
+          }
         }); 
         
 
@@ -111,7 +166,6 @@ export class HomePage {
   }
    //verifica existencia de expedientes
    registra_firebase(nombre_actuario, data_array) {
-    ``
     console.log("data->ArrayHome" + JSON.stringify(data_array));
     this.db.collection("usuarios").doc(nombre_actuario).set({
       data_array

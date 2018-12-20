@@ -31,6 +31,10 @@ import { Camera } from '@ionic-native/camera'
 import { OneSignal } from '@ionic-native/onesignal';
 import { LaunchNavigator } from '@ionic-native/launch-navigator';
 import { BackgroundMode } from '@ionic-native/background-mode';
+
+//Network
+import { Network } from '@ionic-native/network';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -71,7 +75,8 @@ import { BackgroundMode } from '@ionic-native/background-mode';
     InAppBrowser,
     Camera,
     LaunchNavigator,
-    BackgroundMode
+    BackgroundMode,
+    Network
   ]
 })
 export class AppModule {}
